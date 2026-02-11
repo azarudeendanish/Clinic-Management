@@ -21,6 +21,7 @@ export interface Patient {
   phone: string
   email?: string
   createdBy: string // nurse id
+  assignedDoctorId: string
   createdAt: string
 }
 

@@ -23,8 +23,35 @@ export const defaultUsers: User[] = [
   },
   {
     id: "3",
-    name: "Nurse Mary",
+    name: "Dr. doctor1",
+    email: "doctor1@clinic.com",
+    password: "doctor123",
+    role: "DOCTOR",
+    active: true,
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: "4",
+    name: "Dr. doctor2",
+    email: "doctor2@clinic.com",
+    password: "doctor123",
+    role: "DOCTOR",
+    active: true,
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: "5",
+    name: "Nurse1 Mary",
     email: "nurse@clinic.com",
+    password: "nurse123",
+    role: "NURSE",
+    active: true,
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: "6",
+    name: "Nurse2 Queen",
+    email: "nurse2@clinic.com",
     password: "nurse123",
     role: "NURSE",
     active: true,

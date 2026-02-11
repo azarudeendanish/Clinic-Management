@@ -1,8 +1,9 @@
 "use client"
 
-import { useState } from "react"
-import { addPatient } from "@/lib/storage"
+import { useState, useEffect } from "react"
+import { addPatient, getUsers } from "@/lib/storage"
 import { getCurrentUser } from "@/lib/auth"
+import { User } from "@/lib/types"
 import toast from "react-hot-toast"
 
 export default function PatientForm() {
@@ -12,11 +13,23 @@ export default function PatientForm() {
     place: "",
     bloodGroup: "",
     phone: "",
-    email: ""
+    email: "",
+    assignedDoctorId: ""
   })
 
+  const [doctors, setDoctors] = useState<User[]>([])
+
+  useEffect(() => {
+    // Get only active doctors
+    const allUsers = getUsers()
+    const doctorList = allUsers.filter(
+      (u) => u.role === "DOCTOR" && u.active
+    )
+    setDoctors(doctorList)
+  }, [])
+
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
@@ -24,7 +37,7 @@ export default function PatientForm() {
   const handleSubmit = () => {
     const user = getCurrentUser()
 
-    if (!form.name || !form.age || !form.phone) {
+    if (!form.name || !form.age || !form.phone || !form.assignedDoctorId) {
       toast.error("Please fill required fields")
       return
     }
@@ -38,6 +51,7 @@ export default function PatientForm() {
       phone: form.phone,
       email: form.email,
       createdBy: user!.id,
+      assignedDoctorId: form.assignedDoctorId, // ✅ Save doctor
       createdAt: new Date().toISOString()
     })
 
@@ -49,7 +63,8 @@ export default function PatientForm() {
       place: "",
       bloodGroup: "",
       phone: "",
-      email: ""
+      email: "",
+      assignedDoctorId: ""
     })
   }
 
@@ -59,23 +74,68 @@ export default function PatientForm() {
         Register Patient
       </h2>
 
-      {[
-        { name: "name", placeholder: "Name" },
-        { name: "age", placeholder: "Age" },
-        { name: "place", placeholder: "Place" },
-        { name: "bloodGroup", placeholder: "Blood Group" },
-        { name: "phone", placeholder: "Phone Number" },
-        { name: "email", placeholder: "Email" }
-      ].map((field) => (
-        <input
-          key={field.name}
-          name={field.name}
-          value={(form as any)[field.name]}
-          onChange={handleChange}
-          placeholder={field.placeholder}
-          className="w-full border p-2 mb-3 rounded"
-        />
-      ))}
+      <input
+        name="name"
+        value={form.name}
+        onChange={handleChange}
+        placeholder="Name"
+        className="w-full border p-2 mb-3 rounded"
+      />
+
+      <input
+        name="age"
+        value={form.age}
+        onChange={handleChange}
+        placeholder="Age"
+        className="w-full border p-2 mb-3 rounded"
+      />
+
+      <input
+        name="place"
+        value={form.place}
+        onChange={handleChange}
+        placeholder="Place"
+        className="w-full border p-2 mb-3 rounded"
+      />
+
+      <input
+        name="bloodGroup"
+        value={form.bloodGroup}
+        onChange={handleChange}
+        placeholder="Blood Group"
+        className="w-full border p-2 mb-3 rounded"
+      />
+
+      <input
+        name="phone"
+        value={form.phone}
+        onChange={handleChange}
+        placeholder="Phone"
+        className="w-full border p-2 mb-3 rounded"
+      />
+
+      <input
+        name="email"
+        value={form.email}
+        onChange={handleChange}
+        placeholder="Email"
+        className="w-full border p-2 mb-3 rounded"
+      />
+
+      {/* ✅ Doctor Dropdown */}
+      <select
+        name="assignedDoctorId"
+        value={form.assignedDoctorId}
+        onChange={handleChange}
+        className="w-full border p-2 mb-3 rounded"
+      >
+        <option value="">Select Doctor</option>
+        {doctors.map((doctor) => (
+          <option key={doctor.id} value={doctor.id}>
+            {doctor.name}
+          </option>
+        ))}
+      </select>
 
       <button
         onClick={handleSubmit}

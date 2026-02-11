@@ -6,12 +6,20 @@ import Navbar from "@/components/Navbar"
 import { getPatients } from "@/lib/storage"
 import { Patient } from "@/lib/types"
 import PrescriptionForm from "@/components/PrescriptionForm"
+import { getCurrentUser } from "@/lib/auth"
 
 export default function DoctorDashboard() {
   const [patients, setPatients] = useState<Patient[]>([])
 
   const loadPatients = () => {
-    setPatients(getPatients())
+    const allPatients = getPatients()
+    const currentDoctor = getCurrentUser()
+  
+    const filtered = allPatients.filter(
+      (p) => p.assignedDoctorId === currentDoctor?.id
+    )
+  
+    setPatients(filtered)
   }
 
   useEffect(() => {
