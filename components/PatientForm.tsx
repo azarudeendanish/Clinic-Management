@@ -6,7 +6,12 @@ import { getCurrentUser } from "@/lib/auth"
 import { User } from "@/lib/types"
 import toast from "react-hot-toast"
 
-export default function PatientForm() {
+interface PatientFormProps {
+  onSuccess?: () => void
+}
+
+export default function PatientForm({ onSuccess }: PatientFormProps) {
+
   const [form, setForm] = useState({
     name: "",
     age: "",
@@ -19,13 +24,21 @@ export default function PatientForm() {
 
   const [doctors, setDoctors] = useState<User[]>([])
 
+  // ✅ Load active doctors & select first automatically
   useEffect(() => {
-    // Get only active doctors
     const allUsers = getUsers()
     const doctorList = allUsers.filter(
       (u) => u.role === "DOCTOR" && u.active
     )
+
     setDoctors(doctorList)
+
+    if (doctorList.length > 0) {
+      setForm((prev) => ({
+        ...prev,
+        assignedDoctorId: doctorList[0].id
+      }))
+    }
   }, [])
 
   const handleChange = (
@@ -42,6 +55,11 @@ export default function PatientForm() {
       return
     }
 
+    if (!user) {
+      toast.error("User not found")
+      return
+    }
+
     addPatient({
       id: crypto.randomUUID(),
       name: form.name,
@@ -49,14 +67,15 @@ export default function PatientForm() {
       place: form.place,
       bloodGroup: form.bloodGroup,
       phone: form.phone,
-      email: form.email,
-      createdBy: user!.id,
-      assignedDoctorId: form.assignedDoctorId, // ✅ Save doctor
+      email: form.email || undefined,
+      createdBy: user.id, // ✅ nurse id saved
+      assignedDoctorId: form.assignedDoctorId, // ✅ correct doctor id
       createdAt: new Date().toISOString()
     })
 
     toast.success("Patient added successfully")
 
+    // Reset form but keep first doctor selected
     setForm({
       name: "",
       age: "",
@@ -64,8 +83,9 @@ export default function PatientForm() {
       bloodGroup: "",
       phone: "",
       email: "",
-      assignedDoctorId: ""
+      assignedDoctorId: doctors.length > 0 ? doctors[0].id : ""
     })
+    onSuccess?.()
   }
 
   return (
@@ -83,6 +103,7 @@ export default function PatientForm() {
       />
 
       <input
+        type="number"
         name="age"
         value={form.age}
         onChange={handleChange}
@@ -115,6 +136,7 @@ export default function PatientForm() {
       />
 
       <input
+        type="email"
         name="email"
         value={form.email}
         onChange={handleChange}
@@ -129,7 +151,6 @@ export default function PatientForm() {
         onChange={handleChange}
         className="w-full border p-2 mb-3 rounded"
       >
-        <option value="">Select Doctor</option>
         {doctors.map((doctor) => (
           <option key={doctor.id} value={doctor.id}>
             {doctor.name}

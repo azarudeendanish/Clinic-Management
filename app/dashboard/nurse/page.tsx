@@ -11,10 +11,12 @@ import {
 import { getCurrentUser } from "@/lib/auth"
 import { Prescription } from "@/lib/types"
 import toast from "react-hot-toast"
+import NursePatientTable from "@/components/NursePatientTable"
 
 export default function NurseDashboard() {
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([])
-
+  const [showForm, setShowForm] = useState(false)
+  const [refreshKey, setRefreshKey] = useState(0)
   const loadPrescriptions = () => {
     setPrescriptions(getPrescriptions())
   }
@@ -22,7 +24,10 @@ export default function NurseDashboard() {
   useEffect(() => {
     loadPrescriptions()
   }, [])
-
+  const handlePatientAdded = () => {
+    setShowForm(false)
+    setRefreshKey((prev) => prev + 1) // ✅ trigger refresh
+  }
   const handleDispense = (id: string) => {
     const user = getCurrentUser()
     markAsDispensed(id, user!.id)
@@ -35,40 +40,31 @@ export default function NurseDashboard() {
       <Navbar />
 
       <div className="p-6 space-y-6">
-        <PatientForm />
 
-        <div>
-          <h2 className="text-lg font-semibold mb-2">
-            Prescriptions
+        {/* ✅ Add New Patient Button */}
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-semibold">
+            Nurse Dashboard
           </h2>
 
-          {prescriptions.map((p) => (
-            <div
-              key={p.id}
-              className="border p-3 mb-2 rounded bg-white"
-            >
-              <p><strong>Diagnosis:</strong> {p.diagnosis}</p>
-              <p><strong>Medicines:</strong> {p.medicines}</p>
-              <p>Status: {p.dispensed ? "Dispensed" : "Pending"}</p>
-
-              {!p.dispensed && (
-                <button
-                  onClick={() => handleDispense(p.id)}
-                  className="bg-green-600 text-white px-3 py-1 mt-2 rounded"
-                >
-                  Dispense
-                </button>
-              )}
-
-              <button
-                onClick={() => window.print()}
-                className="ml-2 bg-gray-600 text-white px-3 py-1 rounded"
-              >
-                Print
-              </button>
-            </div>
-          ))}
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="bg-blue-600 text-white px-4 py-2 rounded"
+          >
+            {showForm ? "Close Form" : "Add New Patient"}
+          </button>
         </div>
+
+        {/* ✅ Show Patient Form Conditionally */}
+        {showForm && (
+          <PatientForm
+            onSuccess={handlePatientAdded} // auto close after save
+          />
+        )}
+
+        {/* ✅ Patient Table */}
+        <NursePatientTable refreshKey={refreshKey} />
+
       </div>
     </ProtectedRoute>
   )
