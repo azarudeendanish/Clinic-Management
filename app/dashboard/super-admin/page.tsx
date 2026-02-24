@@ -64,84 +64,129 @@ export default function SuperAdminDashboard() {
 
   return (
     <ProtectedRoute allowedRoles={["SUPER"]}>
-      <Navbar />
+      <div className="min-h-screen bg-gray-100">
+        <Navbar />
 
-      <div className="p-6 space-y-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
-        {/* Add User */}
-        <div className="bg-white p-4 rounded shadow">
-          <h2 className="font-semibold mb-3">Add Doctor/Nurse</h2>
+          {/* Header */}
+          <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
+            <h2 className="text-2xl font-semibold text-gray-800">
+              Super Admin Dashboard
+            </h2>
+            <p className="text-sm text-gray-500 mt-1">
+              Manage users, patients and prescriptions
+            </p>
+          </div>
 
-          <input
-            placeholder="Name"
-            className="border p-2 mr-2"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <input
-            placeholder="Email"
-            className="border p-2 mr-2"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            placeholder="Password"
-            className="border p-2 mr-2"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-
-          <select
-            className="border p-2 mr-2"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-          >
-            <option value="DOCTOR">Doctor</option>
-            <option value="NURSE">Nurse</option>
-          </select>
-
-          <button
-            onClick={handleAddUser}
-            className="bg-blue-600 text-white px-3 py-2 rounded"
-          >
-            Add
-          </button>
-        </div>
-
-        {/* Users List */}
-        <div>
-          <h2 className="font-semibold mb-2">Users</h2>
-
-          {users.map((u) => (
-            <div key={u.id} className="border p-2 mb-2 rounded">
-              {u.name} - {u.role} -{" "}
-              {u.active ? "Active" : "Inactive"}
-
-              {u.role !== "SUPER" && (
-                <button
-                  onClick={() =>
-                    toggleStatus(u.id, u.active)
-                  }
-                  className="ml-3 bg-gray-600 text-white px-2 py-1 rounded text-sm"
-                >
-                  Toggle
-                </button>
-              )}
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+              <p className="text-sm text-gray-500">Total Users</p>
+              <p className="text-2xl font-semibold text-gray-800">
+                {users.length}
+              </p>
             </div>
-          ))}
+
+            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+              <p className="text-sm text-gray-500">Total Patients</p>
+              <p className="text-2xl font-semibold text-gray-800">
+                {patients.length}
+              </p>
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+              <p className="text-sm text-gray-500">Total Prescriptions</p>
+              <p className="text-2xl font-semibold text-gray-800">
+                {prescriptions.length}
+              </p>
+            </div>
+          </div>
+
+          {/* Add User Form */}
+          <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              Add Doctor / Nurse
+            </h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              <input
+                placeholder="Name"
+                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+
+              <input
+                placeholder="Email"
+                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+
+              <input
+                type="password"
+                placeholder="Password"
+                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+
+              <select
+                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+              >
+                <option value="DOCTOR">Doctor</option>
+                <option value="NURSE">Nurse</option>
+              </select>
+
+              <button
+                onClick={handleAddUser}
+                className="bg-gray-800 hover:bg-gray-900 text-white rounded-lg px-4 py-2 text-sm transition"
+              >
+                Add User
+              </button>
+            </div>
+          </div>
+
+          {/* Users List */}
+          <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              Users
+            </h3>
+
+            <div className="space-y-3">
+              {users.map((u) => (
+                <div
+                  key={u.id}
+                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between border border-gray-100 rounded-lg p-4"
+                >
+                  <div>
+                    <p className="font-medium text-gray-800">
+                      {u.name}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {u.role} • {u.active ? "Active" : "Inactive"}
+                    </p>
+                  </div>
+
+                  {u.role !== "SUPER" && (
+                    <button
+                      onClick={() =>
+                        toggleStatus(u.id, u.active)
+                      }
+                      className="mt-3 sm:mt-0 bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-sm transition"
+                    >
+                      Toggle Status
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
         </div>
-
-        {/* Data Overview */}
-        <div>
-          <h2 className="font-semibold mb-2">All Patients</h2>
-          <p>Total: {patients.length}</p>
-
-          <h2 className="font-semibold mt-4 mb-2">
-            All Prescriptions
-          </h2>
-          <p>Total: {prescriptions.length}</p>
-        </div>
-
       </div>
     </ProtectedRoute>
   )

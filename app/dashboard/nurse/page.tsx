@@ -17,6 +17,7 @@ export default function NurseDashboard() {
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([])
   const [showForm, setShowForm] = useState(false)
   const [refreshKey, setRefreshKey] = useState(0)
+
   const loadPrescriptions = () => {
     setPrescriptions(getPrescriptions())
   }
@@ -24,10 +25,12 @@ export default function NurseDashboard() {
   useEffect(() => {
     loadPrescriptions()
   }, [])
+
   const handlePatientAdded = () => {
     setShowForm(false)
-    setRefreshKey((prev) => prev + 1) // ✅ trigger refresh
+    setRefreshKey((prev) => prev + 1)
   }
+
   const handleDispense = (id: string) => {
     const user = getCurrentUser()
     markAsDispensed(id, user!.id)
@@ -37,34 +40,44 @@ export default function NurseDashboard() {
 
   return (
     <ProtectedRoute allowedRoles={["NURSE"]}>
-      <Navbar />
+      <div className="min-h-screen bg-gray-100">
+        <Navbar />
 
-      <div className="p-6 space-y-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
-        {/* ✅ Add New Patient Button */}
-        <div className="flex justify-between items-center">
-          <h2 className="text-xl font-semibold">
-            Nurse Dashboard
-          </h2>
+          {/* Header Card */}
+          <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            
+            <div>
+              <h2 className="text-2xl font-semibold text-gray-800">
+                Nurse Dashboard
+              </h2>
+              <p className="text-sm text-gray-500 mt-1">
+                Manage patients and prescriptions
+              </p>
+            </div>
 
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="bg-blue-600 text-white px-4 py-2 rounded"
-          >
-            {showForm ? "Close Form" : "Add New Patient"}
-          </button>
+            <button
+              onClick={() => setShowForm(!showForm)}
+              className="w-full sm:w-auto bg-gray-800 hover:bg-gray-900 text-white px-5 py-2.5 rounded-lg text-sm transition"
+            >
+              {showForm ? "Close Form" : "Add New Patient"}
+            </button>
+          </div>
+
+          {/* Patient Form */}
+          {showForm && (
+            <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
+              <PatientForm onSuccess={handlePatientAdded} />
+            </div>
+          )}
+
+          {/* Table Section */}
+          <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 overflow-x-auto">
+            <NursePatientTable refreshKey={refreshKey} />
+          </div>
+
         </div>
-
-        {/* ✅ Show Patient Form Conditionally */}
-        {showForm && (
-          <PatientForm
-            onSuccess={handlePatientAdded} // auto close after save
-          />
-        )}
-
-        {/* ✅ Patient Table */}
-        <NursePatientTable refreshKey={refreshKey} />
-
       </div>
     </ProtectedRoute>
   )

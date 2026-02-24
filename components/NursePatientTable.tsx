@@ -242,90 +242,92 @@ interface NursePatientTableProps {
   
 
   return (
-    <div className="bg-white p-6 rounded shadow mt-6">
-      <h2 className="text-lg font-semibold mb-4">
+    <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 mt-6">
+      <h2 className="text-xl font-semibold text-gray-800 mb-6">
         Patient List
       </h2>
-
+  
       <div className="overflow-x-auto">
-        <table className="w-full border text-sm">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="border p-2">Name</th>
-              <th className="border p-2">Age</th>
-              <th className="border p-2">Place</th>
-              <th className="border p-2">Doctor</th>
-              <th className="border p-2">Nurse</th>
-              <th className="border p-2">Status</th>
-              <th className="border p-2">Actions</th>
+        <table className="min-w-full divide-y divide-gray-200 text-sm">
+          <thead className="bg-gray-50">
+            <tr className="text-left text-gray-600">
+              <th className="px-4 py-3">S.No</th>
+              <th className="px-4 py-3">Name</th>
+              <th className="px-4 py-3">Age</th>
+              <th className="px-4 py-3">Place</th>
+              <th className="px-4 py-3">Doctor</th>
+              <th className="px-4 py-3">Nurse</th>
+              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3 text-center">Actions</th>
             </tr>
           </thead>
-
-          <tbody>
-            {data.map((item) => (
-              <tr key={item.patient.id} className="text-center">
-                <td className="border p-2">
+  
+          <tbody className="divide-y divide-gray-100">
+            {data.map((item, index) => (
+              <tr
+                key={item.patient.id}
+                className="hover:bg-gray-50 transition"
+              >
+                <td className="px-4 py-3 text-gray-800">{index + 1}</td>
+                <td className="px-4 py-3 text-gray-800">
                   {item.patient.name}
                 </td>
-                <td className="border p-2">
+                <td className="px-4 py-3 text-gray-600">
                   {item.patient.age}
                 </td>
-                <td className="border p-2">
+                <td className="px-4 py-3 text-gray-600">
                   {item.patient.place}
                 </td>
-                <td className="border p-2">
+                <td className="px-4 py-3 text-gray-600">
                   {item.doctor?.name || "-"}
                 </td>
-                <td className="border p-2">
+                <td className="px-4 py-3 text-gray-600">
                   {item.nurse?.name || "-"}
                 </td>
-                <td className="border p-2">
+  
+                <td className="px-4 py-3">
                   {item.prescription?.dispensed ? (
-                    <span className="text-green-600 font-medium">
+                    <span className="px-3 py-1 text-xs rounded-full bg-gray-200 text-gray-700">
                       Dispensed
                     </span>
                   ) : (
-                    <span className="text-red-600 font-medium">
+                    <span className="px-3 py-1 text-xs rounded-full bg-gray-100 text-gray-500">
                       Pending
                     </span>
                   )}
                 </td>
-
-                <td className="border p-2 space-x-2">
+  
+                <td className="px-4 py-3 text-center space-x-2">
                   {item.prescription && (
                     <>
                       <button
                         onClick={() =>
-                          setSelectedPrescription(
-                            item.prescription!
-                          )
+                          setSelectedPrescription(item.prescription!)
                         }
-                        className="bg-blue-600 text-white px-2 py-1 rounded"
+                        className="bg-gray-700 hover:bg-gray-800 text-white px-3 py-1 rounded-md text-xs transition"
                       >
                         View
                       </button>
-
+  
                       {!item.prescription.dispensed && (
                         <button
                           onClick={() =>
-                            handleDispense(
-                              item.prescription!.id
-                            )
+                            handleDispense(item.prescription!.id)
                           }
-                          className="bg-green-600 text-white px-2 py-1 rounded"
+                          className="bg-gray-800 hover:bg-gray-900 text-white px-3 py-1 rounded-md text-xs transition"
                         >
                           Dispense
                         </button>
                       )}
-
-                        {item.prescription?.dispensed && (
+  
+                      {item.prescription?.dispensed && (
                         <button
-                            onClick={() => handlePrintPrescription(item)}
-                            className="bg-gray-700 text-white px-2 py-1 rounded"
+                          onClick={() => handlePrintPrescription(item)}
+                          className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded-md text-xs transition"
                         >
-                            Print
+                          Print
                         </button>
-                        )}
+                      )}
                     </>
                   )}
                 </td>
@@ -334,40 +336,50 @@ interface NursePatientTableProps {
           </tbody>
         </table>
       </div>
-
-      {/* ✅ View Modal */}
+  
+      {/* View Modal */}
       {selectedPrescription && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-          <div className="bg-white p-6 rounded w-96">
-            <h3 className="text-lg font-semibold mb-2">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+          <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
               Prescription Details
             </h3>
-
-            <p>
-              <strong>Diagnosis:</strong>{" "}
-              {selectedPrescription.diagnosis}
-            </p>
-
-            <p>
-              <strong>Medicines:</strong>{" "}
-              {selectedPrescription.medicines}
-            </p>
-
-            <p>
-              <strong>Notes:</strong>{" "}
-              {selectedPrescription.notes || "-"}
-            </p>
-
-            <p>
-              <strong>Status:</strong>{" "}
-              {selectedPrescription.dispensed
-                ? "Dispensed"
-                : "Pending"}
-            </p>
-
+  
+            <div className="space-y-3 text-sm text-gray-600">
+              <p>
+                <span className="font-medium text-gray-800">
+                  Diagnosis:
+                </span>{" "}
+                {selectedPrescription.diagnosis}
+              </p>
+  
+              <p>
+                <span className="font-medium text-gray-800">
+                  Medicines:
+                </span>{" "}
+                {selectedPrescription.medicines}
+              </p>
+  
+              <p>
+                <span className="font-medium text-gray-800">
+                  Notes:
+                </span>{" "}
+                {selectedPrescription.notes || "-"}
+              </p>
+  
+              <p>
+                <span className="font-medium text-gray-800">
+                  Status:
+                </span>{" "}
+                {selectedPrescription.dispensed
+                  ? "Dispensed"
+                  : "Pending"}
+              </p>
+            </div>
+  
             <button
               onClick={() => setSelectedPrescription(null)}
-              className="mt-4 bg-red-600 text-white px-3 py-1 rounded"
+              className="mt-6 w-full bg-gray-800 hover:bg-gray-900 text-white py-2 rounded-lg text-sm transition"
             >
               Close
             </button>

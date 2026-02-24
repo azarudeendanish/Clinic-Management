@@ -89,81 +89,128 @@ export default function PatientForm({ onSuccess }: PatientFormProps) {
   }
 
   return (
-    <div className="bg-white p-6 shadow rounded w-full max-w-lg text-gray-700">
-      <h2 className="text-lg font-semibold mb-4">
+    <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 w-full">
+      <h2 className="text-xl font-semibold text-gray-800 mb-6">
         Register Patient
       </h2>
-
-      <input
-        name="name"
-        value={form.name}
-        onChange={handleChange}
-        placeholder="Name"
-        className="w-full border p-2 mb-3 rounded"
-      />
-
-      <input
-        type="number"
-        name="age"
-        value={form.age}
-        onChange={handleChange}
-        placeholder="Age"
-        className="w-full border p-2 mb-3 rounded"
-      />
-
-      <input
-        name="place"
-        value={form.place}
-        onChange={handleChange}
-        placeholder="Place"
-        className="w-full border p-2 mb-3 rounded"
-      />
-
-      <input
-        name="bloodGroup"
-        value={form.bloodGroup}
-        onChange={handleChange}
-        placeholder="Blood Group"
-        className="w-full border p-2 mb-3 rounded"
-      />
-
-      <input
-        name="phone"
-        value={form.phone}
-        onChange={handleChange}
-        placeholder="Phone"
-        className="w-full border p-2 mb-3 rounded"
-      />
-
-      <input
-        type="email"
-        name="email"
-        value={form.email}
-        onChange={handleChange}
-        placeholder="Email"
-        className="w-full border p-2 mb-3 rounded"
-      />
-
-      {/* ✅ Doctor Dropdown */}
-      <select
-        name="assignedDoctorId"
-        value={form.assignedDoctorId}
-        onChange={handleChange}
-        className="w-full border p-2 mb-3 rounded"
-      >
-        {doctors.map((doctor) => (
-          <option key={doctor.id} value={doctor.id}>
-            {doctor.name}
-          </option>
-        ))}
-      </select>
-
-      <button
-        onClick={handleSubmit}
-        className="w-full bg-green-600 text-white py-2 rounded"
-      >
-        Save Patient
-      </button>
+  
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  
+        {/* Name */}
+        <div>
+          <label className="block text-xs text-gray-600 mb-1">
+            Full Name *
+          </label>
+          <input
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            placeholder="Enter patient name"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-800 placeholder-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-gray-400"
+          />
+        </div>
+  
+        {/* Age */}
+        <div>
+          <label className="block text-xs text-gray-600 mb-1">
+            Age *
+          </label>
+          <input
+            type="number"
+            name="age"
+            value={form.age}
+            onChange={handleChange}
+            placeholder="Enter age"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-800 placeholder-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-gray-400"
+          />
+        </div>
+  
+        {/* Place */}
+        <div>
+          <label className="block text-xs text-gray-600 mb-1">
+            Place
+          </label>
+          <input
+            name="place"
+            value={form.place}
+            onChange={handleChange}
+            placeholder="Enter place"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-800 placeholder-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-gray-400"
+          />
+        </div>
+  
+        {/* Blood Group */}
+        <div>
+          <label className="block text-xs text-gray-600 mb-1">
+            Blood Group
+          </label>
+          <input
+            name="bloodGroup"
+            value={form.bloodGroup}
+            onChange={handleChange}
+            placeholder="e.g. O+"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-800 placeholder-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-gray-400"
+          />
+        </div>
+  
+        {/* Phone */}
+        <div>
+          <label className="block text-xs text-gray-600 mb-1">
+            Phone *
+          </label>
+          <input
+            name="phone"
+            value={form.phone}
+            onChange={handleChange}
+            placeholder="Enter phone number"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-800 placeholder-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-gray-400"
+          />
+        </div>
+  
+        {/* Email */}
+        <div>
+          <label className="block text-xs text-gray-600 mb-1">
+            Email
+          </label>
+          <input
+            type="email"
+            name="email"
+            value={form.email}
+            onChange={handleChange}
+            placeholder="Enter email"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-800 placeholder-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-gray-400"
+          />
+        </div>
+  
+        {/* Doctor Dropdown */}
+        <div className="sm:col-span-2">
+          <label className="block text-xs text-gray-600 mb-1">
+            Assign Doctor *
+          </label>
+          <select
+            name="assignedDoctorId"
+            value={form.assignedDoctorId}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-gray-400"
+          >
+            {doctors.map((doctor) => (
+              <option key={doctor.id} value={doctor.id}>
+                {doctor.name}
+              </option>
+            ))}
+          </select>
+        </div>
+  
+      </div>
+  
+      <div className="mt-6">
+        <button
+          onClick={handleSubmit}
+          className="w-full bg-gray-800 hover:bg-gray-900 text-white py-2.5 rounded-lg text-sm transition"
+        >
+          Save Patient
+        </button>
+      </div>
     </div>
   )
 }
