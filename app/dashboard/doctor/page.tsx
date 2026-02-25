@@ -7,6 +7,7 @@ import { getPatients, getPrescriptions, addPrescription } from "@/lib/storage"
 import { getCurrentUser } from "@/lib/auth"
 import { Patient, Prescription } from "@/lib/types"
 import toast from "react-hot-toast"
+import { formatSmartDate } from "@/lib/utils/dateUtils"
 
 export default function DoctorDashboard() {
   const [patients, setPatients] = useState<Patient[]>([])
@@ -115,6 +116,7 @@ export default function DoctorDashboard() {
                   <th className="px-4 py-3">Name</th>
                   <th className="px-4 py-3">Age</th>
                   <th className="px-4 py-3">Blood Group</th>
+                  <th className="px-4 py-3">Patient Created At</th>
                   <th className="px-4 py-3">Status</th>
                   <th className="px-4 py-3 text-center">Actions</th>
                 </tr>
@@ -126,6 +128,14 @@ export default function DoctorDashboard() {
                     <td className="px-4 py-3 text-gray-800">{patient.name}</td>
                     <td className="px-4 py-3 text-gray-600">{patient.age}</td>
                     <td className="px-4 py-3 text-gray-600">{patient.bloodGroup}</td>
+                    {/* <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
+                      {formatSmartDate(
+                        prescriptions.find(p => p.patientId === patient.id)?.createdAt
+                      )}
+                    </td> */}
+                    <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
+                      {formatSmartDate(patient.createdAt)}
+                    </td>
                     <td className="px-4 py-3 text-gray-600">
                       <span className={`px-2 py-1 text-xs rounded-full ${
                         getPrescriptionStatus(patient.id) === "Dispensed"

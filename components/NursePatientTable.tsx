@@ -11,6 +11,8 @@ import { getCurrentUser } from "@/lib/auth"
 import { Patient, Prescription, User } from "@/lib/types"
 import toast from "react-hot-toast"
 import QRCode from "qrcode"
+import { formatSmartDate } from "@/lib/utils/dateUtils"
+import { sortPatientsByLatest } from "@/lib/utils/sortUtils"
 
 
 interface CombinedData {
@@ -36,7 +38,7 @@ interface NursePatientTableProps {
     const prescriptions = getPrescriptions()
     const users = getUsers()
 
-    const combined: CombinedData[] = patients.map((patient) => {
+    let combined: CombinedData[] = patients.map((patient) => {
       const prescription = prescriptions.find(
         (p) => p.patientId === patient.id
       )
@@ -56,7 +58,9 @@ interface NursePatientTableProps {
         nurse
       }
     })
-
+    combined = sortPatientsByLatest(combined.map(c => c.patient)).map((p) =>
+      combined.find(c => c.patient.id === p.id)!
+    )
     setData(combined)
   }
 
@@ -238,8 +242,6 @@ interface NursePatientTableProps {
     printWindow.document.close()
     printWindow.print()
   }
-  
-  
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 mt-6">
@@ -257,6 +259,7 @@ interface NursePatientTableProps {
               <th className="px-4 py-3">Place</th>
               <th className="px-4 py-3">Doctor</th>
               <th className="px-4 py-3">Nurse</th>
+              <th className="px-4 py-3">Patient Created At</th>
               <th className="px-4 py-3">Status</th>
               <th className="px-4 py-3 text-center">Actions</th>
             </tr>
@@ -284,7 +287,9 @@ interface NursePatientTableProps {
                 <td className="px-4 py-3 text-gray-600">
                   {item.nurse?.name || "-"}
                 </td>
-  
+                <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
+                  {formatSmartDate(item.patient.createdAt)}
+                </td>
                 <td className="px-4 py-3">
                   {item.prescription?.dispensed ? (
                     <span className="px-3 py-1 text-xs rounded-full bg-gray-200 text-gray-700">
