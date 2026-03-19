@@ -49,6 +49,18 @@ export const addPatient = (patient: Patient) => {
   savePatients([...patients, patient])
 }
 
+/* ---------- PATIENT UPDATE ---------- */
+
+export const updatePatient = (updatedPatient: Patient) => {
+  const patients = getPatients()
+
+  const updated = patients.map((p) =>
+    p.id === updatedPatient.id ? updatedPatient : p
+  )
+
+  savePatients(updated)
+}
+
 /* ---------- PRESCRIPTIONS ---------- */
 
 export const getPrescriptions = (): Prescription[] =>
