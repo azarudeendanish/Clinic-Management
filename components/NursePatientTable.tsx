@@ -12,7 +12,7 @@ import {
 import { getCurrentUser } from "@/lib/auth"
 import { Patient, Prescription, User } from "@/lib/types"
 import toast from "react-hot-toast"
-import QRCode from "qrcode"
+// import QRCode from "qrcode"
 import { formatSmartDate } from "@/lib/utils/dateUtils"
 import { sortPatientsByLatest } from "@/lib/utils/sortUtils"
 
@@ -100,7 +100,7 @@ interface NursePatientTableProps {
       Date: ${new Date(prescription.createdAt).toLocaleDateString()}
     `
   
-    const qrImage = await QRCode.toDataURL(qrData)
+    // const qrImage = await QRCode.toDataURL(qrData)
   
     // Convert medicine string into table rows
     const medicineRows = prescription.medicines
@@ -232,7 +232,7 @@ interface NursePatientTableProps {
             </div>
   
             <div style="margin-top:30px;text-align:center;">
-              <img src="${qrImage}" width="120"/>
+              <img src="" alt="add qrImage var in src" width="120"/>
               <p style="font-size:12px;">Scan to verify prescription</p>
             </div>
           </div>
